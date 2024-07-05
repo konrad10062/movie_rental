@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block title %}Rent {{ movie.title }} - Movie Rental{% endblock %}
+
+{% block content %}
+<h1>Rent {{ movie.title }}</h1>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Rent Movie</button>
+</form>
+{% endblock %}

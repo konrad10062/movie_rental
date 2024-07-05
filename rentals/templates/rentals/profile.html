@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - Movie Rental{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Profile</h1>
+
+    <h2>Active Rentals</h2>
+    <div class="row">
+        {% for rental in active_rentals %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rental.movie.title }}</h5>
+                    <p class="card-text">Return by: {{ rental.return_date }}</p>
+                    <!-- Dodaj informacje o czasie pozostałym do zwrotu, jeśli to potrzebne -->
+                    <form method="post" action="{% url 'rentals:return_movie' rental.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">Return Movie</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No active rentals.</p>
+        {% endfor %}
+    </div>
+
+    <h2>Rental History</h2>
+    <div class="row">
+        {% for rental in rental_history %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ rental.movie.title }}</h5>
+                    <p class="card-text">Rented on: {{ rental.rental_date }}</p>
+                    <p class="card-text">Returned on: {{ rental.return_date }}</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No rental history.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

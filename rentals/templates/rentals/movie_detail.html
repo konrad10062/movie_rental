@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Movie Detail: {{ movie.title }}{% endblock %}
+
+{% block content %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+            <p class="card-text">Director: {{ movie.director }}</p>
+            <p class="card-text">Release Date: {{ movie.release_date }}</p>
+            <p class="card-text">Category: {{ movie.category }}</p>
+            <!-- Dodaj więcej informacji o filmie -->
+            {% if is_rented %}
+                <button class="btn btn-secondary" disabled>Rented</button>
+            {% else %}
+                <a href="{% url 'rentals:rent_movie' movie.pk %}" class="btn btn-primary">Rent Movie</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
