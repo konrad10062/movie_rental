@@ -17,7 +17,7 @@ def edit_profile(request):
         if profile_form.is_valid() and password_form.is_valid():
             profile_form.save()
             user = password_form.save()
-            update_session_auth_hash(request, user)  # Update the session with the new password
+            update_session_auth_hash(request, user)
             messages.success(request, 'Your profile and password were successfully updated!')
             return redirect('rentals:profile')
         else:
@@ -44,10 +44,9 @@ def profile(request):
     active_rentals = Rental.objects.filter(user=current_user, returned=False)
     rental_history = Rental.objects.filter(user=current_user, returned=True)
 
-    # Oblicz czas pozostały do zwrotu dla każdego wypożyczenia
     for rental in active_rentals:
         time_left = rental.return_date - current_time
-        rental.time_left = int(time_left.total_seconds() // 3600)  # Pozostały czas w godzinach
+        rental.time_left = int(time_left.total_seconds() // 3600)
 
     context = {
         'active_rentals': active_rentals,
@@ -59,7 +58,7 @@ def profile(request):
 
 def home(request):
     movies = Movie.objects.all()
-    selected_movies = movies[:5]  # Pobierz 5 wybranych filmów
+    selected_movies = movies[:5]
     context = {
         'movies': movies,
         'selected_movies': selected_movies,
@@ -71,12 +70,10 @@ def movie_list(request):
     movies = Movie.objects.all()
     categories = Category.objects.all()
 
-    # Filtrowanie po kategorii
     category_id = request.GET.get('category')
     if category_id:
         movies = movies.filter(category__id=category_id)
 
-    # Wyszukiwanie po nazwie filmu
     query = request.GET.get('search')
     if query:
         movies = movies.filter(title__icontains=query)
@@ -93,7 +90,6 @@ def movie_detail(request, pk):
     movie = get_object_or_404(Movie, pk=pk)
     current_user = request.user
 
-    # Sprawdzenie, czy użytkownik już wypożyczył ten film
     is_rented = Rental.objects.filter(user=current_user, movie=movie, returned=False).exists()
 
     context = {
@@ -127,9 +123,8 @@ def rent_movie(request, movie_id):
     #    messages.warning(request, 'You have already rented this movie.')
     #    return redirect('rentals:movie_detail', pk=movie_id)
 
-    # Jeśli użytkownik jeszcze nie wypożyczył filmu, dodaj nowe wypożyczenie
     current_time = timezone.now()
-    return_date = current_time + timezone.timedelta(hours=24)  # Ustawienie czasu zwrotu za 24 godziny
+    return_date = current_time + timezone.timedelta(hours=24)
 
     rental = Rental(user=current_user, movie=movie, return_date=return_date, returned=False)
     rental.save()

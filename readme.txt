@@ -47,6 +47,8 @@ docker-compose exec web python manage.py makemigrations
 Create a superuser to access the Django admin interface:
 docker-compose run web python manage.py createsuperuser
 
+Add sample movies to database:
+docker-compose exec web python populate_movies.py
 
 Access the application:
 Open your browser and navigate to http://localhost:8000 to access the Movie Rental application.

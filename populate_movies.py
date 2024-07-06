@@ -1,21 +1,17 @@
 import os
 import django
-
-# Ustawienie zmiennej środowiskowej DJANGO_SETTINGS_MODULE na Twoje ustawienia Django
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nazwa_twojego_projektu.settings')
-
-# Inicjalizacja Django
-django.setup()
-
-# Import modeli Django
 from rentals.models import Movie, Category
 
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'nazwa_twojego_projektu.settings')
+
+django.setup()
+
+
 def populate_movies():
-    # Utwórz lub pobierz kategorie
     category1, _ = Category.objects.get_or_create(name='Kategoria 1')
     category2, _ = Category.objects.get_or_create(name='Kategoria 2')
 
-    # Lista filmów do dodania
     movies_to_add = [
         {'title': 'Pierwszy film', 'description': 'Opis pierwszego filmu', 'category': category1, 'release_date': '2024-01-01'},
         {'title': 'Drugi film', 'description': 'Opis drugiego filmu', 'category': category2, 'release_date': '2024-02-01'},
@@ -29,7 +25,6 @@ def populate_movies():
         {'title': 'Dziesiąty film', 'description': 'Opis dziesiątego filmu', 'category': category2, 'release_date': '2024-10-01'}
     ]
 
-    # Dodawanie filmów do bazy danych
     for movie_data in movies_to_add:
         Movie.objects.create(
             title=movie_data['title'],

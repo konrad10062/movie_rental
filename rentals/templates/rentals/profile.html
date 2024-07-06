@@ -14,7 +14,6 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ rental.movie.title }}</h5>
                     <p class="card-text">Return by: {{ rental.return_date }}</p>
-                    <!-- Dodaj informacje o czasie pozostałym do zwrotu, jeśli to potrzebne -->
                     <form method="post" action="{% url 'rentals:return_movie' rental.pk %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-primary">Return Movie</button>
