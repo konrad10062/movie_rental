@@ -5,7 +5,7 @@
 {% block content %}
 <div class="container">
     <h1>Profile</h1>
-
+    <a href="{% url 'rentals:edit_profile' %}" class="btn btn-primary">Edit Profile</a>
     <h2>Active Rentals</h2>
     <div class="row">
         {% for rental in active_rentals %}

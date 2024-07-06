@@ -10,4 +10,5 @@ urlpatterns = [
     path('movies/<int:movie_id>/rent/', views.rent_movie, name='rent_movie'),
     path('return/<int:rental_id>/', views.return_movie, name='return_movie'),
     path('profile/', views.profile, name='profile'),
+    path('profile/edit/', views.edit_profile, name='edit_profile'),
 ]

@@ -1,9 +1,39 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Movie, Rental
+from .models import Movie, Rental, Category
 from django.contrib import messages
-from .forms import MovieForm, UserRegisterForm, RentalForm
+from .forms import MovieForm, UserRegisterForm, RentalForm, UserProfileForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        profile_form = UserProfileForm(request.POST, instance=request.user)
+        password_form = PasswordChangeForm(request.user, request.POST)
+
+        if profile_form.is_valid() and password_form.is_valid():
+            profile_form.save()
+            user = password_form.save()
+            update_session_auth_hash(request, user)  # Update the session with the new password
+            messages.success(request, 'Your profile and password were successfully updated!')
+            return redirect('rentals:profile')
+        else:
+            if not profile_form.is_valid():
+                messages.error(request, 'Please correct the errors in your profile form.')
+            if not password_form.is_valid():
+                messages.error(request, 'Please correct the errors in your password form.')
+    else:
+        profile_form = UserProfileForm(instance=request.user)
+        password_form = PasswordChangeForm(request.user)
+
+    context = {
+        'profile_form': profile_form,
+        'password_form': password_form,
+    }
+    return render(request, 'rentals/edit_profile.html', context)
 
 
 @login_required
@@ -39,18 +69,23 @@ def home(request):
 
 def movie_list(request):
     movies = Movie.objects.all()
+    categories = Category.objects.all()
 
     # Filtrowanie po kategorii
-    category = request.GET.get('category')
-    if category:
-        movies = movies.filter(category__name=category)
+    category_id = request.GET.get('category')
+    if category_id:
+        movies = movies.filter(category__id=category_id)
 
     # Wyszukiwanie po nazwie filmu
-    query = request.GET.get('q')
+    query = request.GET.get('search')
     if query:
         movies = movies.filter(title__icontains=query)
 
-    return render(request, 'rentals/movie_list.html', {'movies': movies})
+    context = {
+        'movies': movies,
+        'categories': categories,
+    }
+    return render(request, 'rentals/movie_list.html', context)
 
 
 @login_required
